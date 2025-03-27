@@ -1,0 +1,8 @@
+.DS_Store
+
+.ropeproject
+
+src/
+dst/
+
+debug/

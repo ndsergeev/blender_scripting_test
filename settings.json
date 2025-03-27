@@ -1,0 +1,12 @@
+{
+  "input_path": "./src",
+  "input_file": "GLB_OnlyBaseGeometry.glb",
+  "export_path": "./dst",
+  "output_file_suffix": "_baked",
+  "bake_image_width": 2048,
+  "bake_image_height": 2048,
+  "light_type": "SUN",
+  "light_position": [10, 10, 5],
+  "light_energy": 500,
+  "debug": true
+}
