@@ -87,6 +87,12 @@ def import_mesh(settings: Settings):
         print("Failed to import mesh")
         return None
 
+def export_mesh(settings: Settings):
+    output_filename = settings.input_file.replace(".glb", settings.output_file_suffix + ".glb")
+    export_filepath = os.path.join(settings.export_path, output_filename)
+    bpy.ops.export_scene.gltf(filepath=export_filepath, export_format='GLB')
+    print(f"Exported mesh to {export_filepath}")
+
 def setup_light(settings: Settings):
     # refer to https://docs.blender.org/api/current/bpy_types_enum_items/light_type_items.html
     light_data = bpy.data.lights.new(name="Light", type=settings.light_type)
@@ -95,6 +101,9 @@ def setup_light(settings: Settings):
     bpy.context.collection.objects.link(light_object)
     light_object.location = (5, 5, 5)
 
+# ---------------------------
+# Main
+# ---------------------------
 def debug():
     # Create camera
     bpy.ops.object.add(type='CAMERA', location=(-5, -5.0, 5))
@@ -120,6 +129,7 @@ if __name__ == '__main__':
     if settings:
         import_mesh(settings)
         setup_light(settings)
+        export_mesh(settings)
 
     if settings.debug:
         debug();
