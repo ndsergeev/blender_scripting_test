@@ -1,6 +1,6 @@
 {
   "input_path": "./src",
-  "input_file": "GLB_OnlyBaseGeometry.glb",
+  "input_file": "suzy.glb",
   "export_path": "./dst",
   "output_file_suffix": "_baked",
   "bake_image_width": 2048,
