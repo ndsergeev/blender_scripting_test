@@ -79,18 +79,41 @@ def import_mesh(settings: Settings):
 
     input_filepath = os.path.abspath(file_name)
     print("Importing:", input_filepath)
-    mesh = bpy.ops.import_scene.gltf(filepath=input_filepath)
-    if mesh:
-        print("Successfully imported mesh")
-        return mesh
+
+    before_import = set(bpy.data.objects)
+    bpy.ops.import_scene.gltf(filepath=input_filepath)
+    imported_objects = set(bpy.data.objects) - before_import
+
+    mesh_objects = [obj for obj in imported_objects if obj.type == 'MESH']
+
+    if mesh_objects:
+        print(f"Successfully imported {len(mesh_objects)} mesh object(s)")
+        #TODO: implementation for one mesh object
+        return mesh_objects[0]
     else:
-        print("Failed to import mesh")
+        print("Failed to find imported mesh objects")
         return None
 
-def export_mesh(settings: Settings):
+def export_mesh(mesh: bpy.types.Object, settings: Settings):
     output_filename = settings.input_file.replace(".glb", settings.output_file_suffix + ".glb")
+    os.makedirs(settings.export_path, exist_ok=True)
     export_filepath = os.path.join(settings.export_path, output_filename)
-    bpy.ops.export_scene.gltf(filepath=export_filepath, export_format='GLB')
+
+    # Exports entire scene
+    # bpy.ops.export_scene.gltf(filepath=export_filepath, export_format='GLB')
+
+    # Exports only the selected mesh
+    # Deselect everything
+    bpy.ops.object.select_all(action='DESELECT')
+
+    if not mesh or mesh.type != 'MESH':
+        print("Error: Provided object is not a valid mesh.")
+        return
+
+    mesh.select_set(True)
+    bpy.context.view_layer.objects.active = mesh
+    bpy.ops.export_scene.gltf(filepath=export_filepath, export_format='GLB', use_selection=True)
+
     print(f"Exported mesh to {export_filepath}")
 
 def setup_light(settings: Settings):
@@ -127,9 +150,9 @@ if __name__ == '__main__':
     argv = read_args()
     settings = init_from_settings(settings_file)
     if settings:
-        import_mesh(settings)
+        mesh = import_mesh(settings)
         setup_light(settings)
-        export_mesh(settings)
+        export_mesh(mesh, settings)
 
     if settings.debug:
         debug();

@@ -2,7 +2,7 @@
 
 .ropeproject
 
-src/
-dst/
+src/*
+dst/*
 
-debug/
+debug/*
